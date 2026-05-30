@@ -1,5 +1,8 @@
 homepage: "https://marketist-c78m.vercel.app"
-documentation: "https://marketist-c78m.vercel.app/docs"
+documentation: "https://marketist-c78m.vercel.app/dashboard/settings/tracking"
+versions:
+  - sha: YOUR_LATEST_COMMIT_SHA
+    changeNotes: Initial release.
 description: >
   Privacy-first analytics for your website.
   Track visitors, conversions, and funnels
