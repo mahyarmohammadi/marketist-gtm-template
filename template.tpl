@@ -6,6 +6,7 @@ ___INFO___
   "version": 1,
   "securityGroups": [],
   "displayName": "Marketist Analytics",
+  "categories": ["ANALYTICS"],
   "brand": {
     "id": "brand_marketist",
     "displayName": "Marketist",
