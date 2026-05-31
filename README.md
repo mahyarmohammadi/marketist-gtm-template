@@ -46,6 +46,6 @@ To track conversions, add a second tag:
 
 ## Support
 
-- Documentation: https://marketist-c78m.vercel.app/dashboard/settings/tracking
+- Documentation: https://marketist.site/dashboard/settings/tracking
 - Issues: Use the GitHub Issues tab above
-- Email: hello@marketist.app
+- Email: hello@marketist.site
