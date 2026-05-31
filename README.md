@@ -22,9 +22,9 @@ Privacy-first AI marketing analytics tag for Google Tag Manager.
 
 ## Finding Your Website ID
 
-1. Log in to [Marketist Dashboard](https://marketist-c78m.vercel.app)
-2. Go to **Settings → Tracking**
-3. Copy your Website ID
+1. Log in to https://marketist.site
+3. Go to **Settings → Tracking**
+4. Copy your Website ID
 
 ## Custom Event Tracking
 
