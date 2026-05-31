@@ -1,5 +1,5 @@
-homepage: "https://marketist-c78m.vercel.app"
-documentation: "https://marketist-c78m.vercel.app/dashboard/settings/tracking"
+homepage: "https://marketist.site"
+documentation: "https://marketist.site/dashboard/settings/tracking"
 versions:
   - sha: c468125fe84af8b0df95e0a450f18ca129196840
     changeNotes: Initial release.
