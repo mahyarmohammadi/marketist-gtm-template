@@ -96,7 +96,7 @@ function onScriptError() {
 }
 
 injectScript(
-  'https://marketist-c78m.vercel.app/tracker.js',
+  'https://marketist.site/tracker.js',
   onScriptLoad,
   onScriptError,
   'marketist_tracker'
@@ -241,7 +241,7 @@ ___WEB_PERMISSIONS___
             "listItem": [
               {
                 "type": 1,
-                "string": "https://marketist-c78m.vercel.app/"
+                "string": "https://marketist.site/"
               }
             ]
           }
