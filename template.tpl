@@ -1,4 +1,4 @@
-___TERMS_OF_SERVICE___
+﻿___TERMS_OF_SERVICE___
 
 By creating or modifying this file you agree to Google Tag Manager's Community
 Template Gallery Developer Terms of Service available at
@@ -69,18 +69,20 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "SIMPLE_TABLE",
     "name": "eventProperties",
-    "displayName": "Event Properties (optional — use GTM variables for dynamic values)",
+    "displayName": "Event Properties (optional - use GTM variables for dynamic values)",
     "simpleTableColumns": [
       {
         "defaultValue": "",
         "displayName": "Property name",
         "name": "name",
+        "type": "TEXT",
         "isUnique": true
       },
       {
         "defaultValue": "",
         "displayName": "Value",
         "name": "value",
+        "type": "TEXT",
         "valueHint": "{{Transaction Revenue}}"
       }
     ],
@@ -95,13 +97,13 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "TEXT",
     "name": "publicKey",
-    "displayName": "RSA Public Key — only for E2E-encrypted sites (Settings → Tracking → Encryption)",
+    "displayName": "RSA Public Key - only for E2E-encrypted sites (Settings > Tracking > Encryption)",
     "simpleValueType": true
   },
   {
     "type": "TEXT",
     "name": "hmacSecret",
-    "displayName": "HMAC Secret — only for E2E-encrypted sites (Settings → Tracking → Encryption)",
+    "displayName": "HMAC Secret - only for E2E-encrypted sites (Settings > Tracking > Encryption)",
     "simpleValueType": true
   }
 ]
@@ -114,7 +116,7 @@ const callInWindow = require('callInWindow');
 const setInWindow = require('setInWindow');
 const log = require('logToConsole');
 
-// Set all globals before the script loads — matches direct-snippet ordering
+// Set all globals before the script loads - matches direct-snippet ordering
 // (globals first, async script second) so the tracker reads them at eval time.
 setInWindow('_mkt_site', data.trackingId, true);
 if (data.publicKey)   setInWindow('_mkt_public_key', data.publicKey,   true);
