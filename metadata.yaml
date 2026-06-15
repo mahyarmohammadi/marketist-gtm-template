@@ -3,6 +3,11 @@ documentation: "https://marketist.site/dashboard/settings/tracking"
 versions:
   - sha: c468125fe84af8b0df95e0a450f18ca129196840
     changeNotes: Initial release.
+  - sha: 8ab5e835343b82105f3c30d9d515f3e064378722
+    changeNotes: >
+      Added E2E encryption support (RSA Public Key + HMAC Secret fields).
+      Added custom event properties table with GTM variable support.
+      Added SPA pageview guidance (History Change trigger).
 description: >
   Privacy-first analytics for your website.
   Track visitors, conversions, and funnels

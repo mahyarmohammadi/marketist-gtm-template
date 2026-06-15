@@ -11,8 +11,9 @@ Privacy-first AI analytics platform.
 - ✅ Scroll depth tracking
 - ✅ Rage click detection
 - ✅ DOM snapshot for heatmaps
-- ✅ Custom event tracking via dataLayer
+- ✅ Custom event tracking with properties
 - ✅ UTM parameter capture
+- ✅ E2E encryption support (RSA + AES-256-GCM)
 - ✅ Cookieless & GDPR compliant
 - ✅ No consent banner required
 - ✅ On-device AI insights
@@ -48,23 +49,58 @@ Privacy-first AI analytics platform.
 | Field | Description | Required |
 |-------|-------------|----------|
 | Website ID | Your Marketist website UUID | ✅ |
-| Track Type | pageview or custom event | ✅ |
-| Event Name | Name for custom events | Custom only |
+| Track Type | `pageview` or `event` | ✅ |
+| Event Name | Name for custom events | Custom events only |
+| Event Properties | Key/value table for event metadata | Optional |
+| RSA Public Key | For E2E-encrypted sites only | Encrypted sites only |
+| HMAC Secret | For E2E-encrypted sites only | Encrypted sites only |
 
-## Custom Event Tracking
+## E2E Encryption
 
-To track conversions, add a second tag:
+If you have enabled E2E encryption in **Settings → Tracking → Encryption**,
+paste your **RSA Public Key** and **HMAC Secret** into the corresponding
+fields in the GTM tag. Both values are shown in the Marketist dashboard
+on the Settings → Tracking → Google Tag Manager tab.
 
-1. Create new Marketist tag
-2. Select **Track Type: Custom Event**
-3. Enter event name (e.g. `purchase`, `signup`, `demo_request`)
+> **These keys are page-public by design** — they are used by the
+> browser to encrypt data before sending it. Placing them in GTM is safe
+> and is the same as including them in your HTML snippet.
+
+## Custom Event Tracking with Properties
+
+To track conversions with dynamic values from your dataLayer, add a
+second Marketist tag:
+
+1. **Create new Marketist tag** — Track Type: **Custom Event**
+2. Enter the **Event Name** (e.g. `purchase`, `signup_completed`)
+3. In **Event Properties**, add rows for each property you want to send.
+   Use GTM variables in the Value column:
+
+   | Property name | Value |
+   |---------------|-------|
+   | `value` | `{{Transaction Revenue}}` |
+   | `currency` | `{{Currency Code}}` |
+   | `orderId` | `{{Transaction ID}}` |
+
 4. Set trigger to your conversion trigger
-5. Save and Publish
+5. **Save and Publish**
+
+## Single-Page Apps (React, Vue, Angular, etc.)
+
+GTM fires **All Pages** tags only on the initial page load — it does not
+detect client-side route changes automatically.
+
+To track SPA navigation, create a **second** Marketist tag:
+
+- **Track Type:** Pageview
+- **Trigger:** History Change (built-in GTM trigger)
+
+This fires on every `pushState` / `replaceState` call without any extra
+code in your app.
 
 ## Debug Mode
 
-Add `?_mkt_debug=true` to any page URL
-to see the Marketist debug overlay.
+Add `?_mkt_debug=true` to any page URL to see the Marketist debug overlay.
 
 ## Privacy
 
