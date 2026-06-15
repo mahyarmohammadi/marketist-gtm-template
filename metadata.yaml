@@ -1,9 +1,9 @@
 homepage: "https://marketist.site"
 documentation: "https://marketist.site/dashboard/settings/tracking"
 versions:
-  - sha: c468125fe84af8b0df95e0a450f18ca129196840
+  - sha: 5750a58a6273cce7a5e68ef5807e3d5fb0375dd1
     changeNotes: Initial release.
-  - sha: 8ab5e835343b82105f3c30d9d515f3e064378722
+  - sha: 5750a58a6273cce7a5e68ef5807e3d5fb0375dd1
     changeNotes: >
       Added E2E encryption support (RSA Public Key + HMAC Secret fields).
       Added custom event properties table with GTM variable support.
