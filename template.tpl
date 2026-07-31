@@ -121,11 +121,9 @@ ___TEMPLATE_PARAMETERS___
 
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
-
 const injectScript = require('injectScript');
 const callInWindow = require('callInWindow');
 const copyFromWindow = require('copyFromWindow');
-const createArgumentsQueue = require('createArgumentsQueue');
 const setInWindow = require('setInWindow');
 const log = require('logToConsole');
 
@@ -138,6 +136,8 @@ const trackerAlreadyRunning = copyFromWindow('_mkt_gtm_loaded');
 
 // Set all globals before the script loads - matches direct-snippet ordering
 // (globals first, async script second) so the tracker reads them at eval time.
+// Every key here needs BOTH read and write in access_globals: setInWindow asks
+// the sandbox for "readwrite", so a write-only grant throws and kills the tag.
 setInWindow('_mkt_site', data.trackingId, true);
 // Mirrors _mkt_site. The v3 (X-Wing) seal reads the site id to build its AAD
 // binding. Current trackers fall back to _mkt_site, but a browser holding an
@@ -146,16 +146,6 @@ setInWindow('_mkt_site', data.trackingId, true);
 setInWindow('_mkt_website_id', data.trackingId, true);
 if (data.publicKey)   setInWindow('_mkt_public_key', data.publicKey,   true);
 if (data.hmacSecret)  setInWindow('_mkt_hmac',        data.hmacSecret,  true);
-
-// tracker.js loads asynchronously, so window.marketist does not exist yet while
-// the page is still parsing. Inline page code calling marketist.track() is then
-// silently dropped by the usual `if (window.marketist)` guard. Stub a queue up
-// front; tracker.js drains window.marketist._q as soon as the real API exists.
-// Guarded on the existing value because overwriting a loaded tracker's API would
-// send every later call into an array nobody reads.
-if (!copyFromWindow('marketist')) {
-  createArgumentsQueue('marketist.track', 'marketist._q');
-}
 
 setInWindow('_mkt_gtm_loaded', true, true);
 
@@ -169,13 +159,16 @@ function buildProps(rows) {
   return p;
 }
 
+// Both calls below run only after tracker.js has loaded, so window.marketist is
+// the real API by then and no queue stub is needed. createArgumentsQueue cannot
+// be used to build one: it resolves the parent of the dotted key and throws
+// "Path marketist.track does not exist" whenever window.marketist is absent,
+// which is exactly the GTM-only install this template exists to serve.
 function onScriptLoad() {
   if (data.trackType === 'event' && data.eventName) {
     callInWindow('marketist.track', data.eventName, buildProps(data.eventProperties));
   } else if (data.trackType === 'pageview' && trackerAlreadyRunning) {
-    // Only reached on a repeat fire, i.e. an SPA route change. If the tracker
-    // has not finished loading yet, marketist.pageview does not exist on the
-    // queue stub and callInWindow is a no-op rather than an error.
+    // Only reached on a repeat fire, i.e. an SPA route change.
     callInWindow('marketist.pageview');
   }
   data.gtmOnSuccess();
@@ -193,9 +186,7 @@ injectScript(
   'marketist_tracker'
 );
 
-
 ___WEB_PERMISSIONS___
-
 [
   {
     "instance": {
@@ -257,7 +248,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -296,7 +287,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -335,7 +326,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -374,123 +365,6 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "marketist"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "marketist.track"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "marketist._q"
-                  },
-                  {
-                    "type": 8,
                     "boolean": true
                   },
                   {
@@ -500,45 +374,6 @@ ___WEB_PERMISSIONS___
                   {
                     "type": 8,
                     "boolean": false
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "marketist.pageview"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
                   }
                 ]
               },
@@ -580,6 +415,84 @@ ___WEB_PERMISSIONS___
                     "boolean": false
                   }
                 ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "marketist.track"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "marketist.pageview"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
               }
             ]
           }
@@ -618,7 +531,6 @@ ___WEB_PERMISSIONS___
     "isRequired": true
   }
 ]
-
 
 ___TESTS___
 
