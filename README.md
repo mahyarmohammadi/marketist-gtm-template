@@ -13,30 +13,21 @@ Privacy-first AI analytics platform.
 - ✅ DOM snapshot for heatmaps
 - ✅ Custom event tracking with properties
 - ✅ UTM parameter capture
-- ✅ E2E encryption support (RSA + AES-256-GCM)
+- ✅ End-to-end encryption support
 - ✅ Cookieless & GDPR compliant
 - ✅ No consent banner required
 - ✅ On-device AI insights
 
 ## Installation
 
-### Via GTM Community Gallery
-
-1. In GTM: **Tags → New → Discover more tag types**
-2. Search **"Marketist"**
-3. Click **Marketist Analytics → Add to workspace**
-4. Enter your **Website ID**
-   (found in Marketist Dashboard → Settings → Tracking)
-5. Set trigger to **All Pages**
-6. **Save and Publish**
-
-### Manual Installation
-
-1. Download `template.tpl`
-2. In GTM → Templates → New
-3. Click ⋮ → Import
-4. Select `template.tpl`
-5. Save and publish
+1. Download [`template.tpl`](https://github.com/mahyarmohammadi/marketist-gtm-template/raw/main/template.tpl)
+2. In GTM: **Templates → Tag Templates → New**, then **⋮ → Import**
+3. Select `template.tpl` and click **Save**
+4. **Tags → New → Tag Configuration**, scroll to **Custom → Marketist Analytics**
+5. Enter your **Website ID**
+   (found in Marketist Dashboard → Settings → Tracking → Google Tag Manager)
+6. Set trigger to **All Pages**
+7. **Save and Publish**
 
 ## Finding Your Website ID
 
@@ -52,19 +43,25 @@ Privacy-first AI analytics platform.
 | Track Type | `pageview` or `event` | ✅ |
 | Event Name | Name for custom events | Custom events only |
 | Event Properties | Key/value table for event metadata | Optional |
-| RSA Public Key | For E2E-encrypted sites only | Encrypted sites only |
+| Public Key | For E2E-encrypted sites only | Encrypted sites only |
 | HMAC Secret | For E2E-encrypted sites only | Encrypted sites only |
 
 ## E2E Encryption
 
 If you have enabled E2E encryption in **Settings → Tracking → Encryption**,
-paste your **RSA Public Key** and **HMAC Secret** into the corresponding
+paste your **Public Key** and **HMAC Secret** into the corresponding
 fields in the GTM tag. Both values are shown in the Marketist dashboard
-on the Settings → Tracking → Google Tag Manager tab.
+on the Settings → Tracking → Google Tag Manager tab. Fill in both —
+encryption stays off unless the pair is complete.
 
 > **These keys are page-public by design** — they are used by the
 > browser to encrypt data before sending it. Placing them in GTM is safe
 > and is the same as including them in your HTML snippet.
+
+> **After rotating a site key, re-copy the Public Key into the tag.**
+> The tracker checks it against the key registered for the website and
+> stops sending data if the two differ, so a stale key here silently
+> halts that site's tracking.
 
 ## Custom Event Tracking with Properties
 
@@ -96,7 +93,9 @@ To track SPA navigation, create a **second** Marketist tag:
 - **Trigger:** History Change (built-in GTM trigger)
 
 This fires on every `pushState` / `replaceState` call without any extra
-code in your app.
+code in your app. The tag sends a pageview only on these repeat fires —
+the initial page load is already counted by the tracker itself, so the
+two tags together do not double-count.
 
 ## Debug Mode
 
