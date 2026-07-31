@@ -20,7 +20,9 @@ Privacy-first AI analytics platform.
 
 ## Installation
 
-1. Download [`template.tpl`](https://github.com/mahyarmohammadi/marketist-gtm-template/raw/main/template.tpl)
+1. Download [`template.tpl`](https://marketist.site/api/gtm-template)
+   (GitHub's raw view serves `.tpl` as plain text, so browsers save it as
+   `template.tpl.txt` and GTM rejects the import — use the link above)
 2. In GTM: **Templates → Tag Templates → New**, then **⋮ → Import**
 3. Select `template.tpl` and click **Save**
 4. **Tags → New → Tag Configuration**, scroll to **Custom → Marketist Analytics**
